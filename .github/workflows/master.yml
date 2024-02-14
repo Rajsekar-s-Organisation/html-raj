@@ -1,0 +1,24 @@
+name: remote ssh command to deploy
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+    
+      - name: Execute ssh command via using private key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.CICD_SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            pwd
+            cd ${{ secrets.REMOTE_TARGET }}
+            git pull origin master
