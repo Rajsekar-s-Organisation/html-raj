@@ -22,16 +22,10 @@ jobs:
             pwd
             cd ${{ secrets.REMOTE_TARGETT }}
             git pull origin master
-      - name: Notify CI success
+
+      - name: Notify about successful code deployment
         if: success()
         uses: Integrations-dev/GitHub-Informer@v1
         with:
           channel-endpoint: ${{ secrets.ENDPOINT }}
-          message: 'CI build passed for ${{ github.actor }}'
-
-      - name: Notify CI failure
-        if: failure()
-        uses: Integrations-dev/GitHub-Informer@v1
-        with:
-          channel-endpoint: ${{ secrets.ENDPOINT }}
-          message: 'CI build failed for ${{ github.actor }}'
+          message: 'Code deployed successfully to the master branch by ${{ github.actor }}'
