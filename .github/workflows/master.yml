@@ -27,11 +27,11 @@ jobs:
         uses: Integrations-dev/GitHub-Informer@v1
         with:
           channel-endpoint: ${{ secrets.ENDPOINT }}
-          message: 'CI build passed for ${{ github.repository }}'
+          message: 'CI build passed for ${{ github.actor }}'
 
       - name: Notify CI failure
         if: failure()
         uses: Integrations-dev/GitHub-Informer@v1
         with:
           channel-endpoint: ${{ secrets.ENDPOINT }}
-          message: 'CI build failed for ${{ github.repository }}'
+          message: 'CI build failed for ${{ github.actor }}'
