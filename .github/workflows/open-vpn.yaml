@@ -17,8 +17,10 @@ jobs:
         uses: golfzaptw/action-connect-ovpn@master
         id: connect_vpn
         with:
-          PING_URL: '127.0.0.1'
+          PING_URL: '203.223.190.34'
           FILE_OVPN: '.github/config.ovpn'
+        env:
+          CA_CRT: ${{ secrets.CA_CRT}}
       - name: Check Connect VPN
         run: echo ${{ steps.connect_vpn.outputs.STATUS }}
       - name: kill vpn
