@@ -1,9 +1,9 @@
-name: servostay-production
+name: Open Vpn
 
 on:
   push:
     branches:
-      - production
+      - master
 jobs:
 
   servostay-cicd:
@@ -18,7 +18,7 @@ jobs:
         id: connect_vpn
         with:
           PING_URL: '127.0.0.1'
-          FILE_OVPN: '.github/vpn/config.ovpn'
+          FILE_OVPN: '.github/config.ovpn'
       - name: Check Connect VPN
         run: echo ${{ steps.connect_vpn.outputs.STATUS }}
       - name: kill vpn
