@@ -3,7 +3,7 @@ name: Open Vpn
 on:
   push:
     branches:
-      - master
+      - masterr
 jobs:
 
   servostay-cicd:
