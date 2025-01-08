@@ -1,4 +1,4 @@
-name: remote ssh command to deploy
+name: gemini ci
 on:
   push:
     branches: [ master ]
@@ -29,7 +29,7 @@ jobs:
           channel-endpoint: ${{ secrets.ENDPOINT }}
           message: 'Code deployed successfully to the master branch by ${{ github.actor }}.'
 
-      - name: Call ChatGPT API
+      - name: Call Gemini API
         if: success()
         run: |
           curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=GEMINI_API_KEY" \
