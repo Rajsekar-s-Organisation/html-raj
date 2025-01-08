@@ -1,0 +1,41 @@
+name: remote ssh command to deploy
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Execute ssh command via using private key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.CICD_SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            pwd
+            cd ${{ secrets.REMOTE_TARGET }}
+            git pull origin master
+
+      - name: Notify about successful code deployment
+        if: success()
+        uses: Integrations-dev/GitHub-Informer@v1
+        with:
+          channel-endpoint: ${{ secrets.ENDPOINT }}
+          message: 'Code deployed successfully to the master branch by ${{ github.actor }}.'
+
+      - name: Call ChatGPT API
+        if: success()
+        run: |
+          curl -X POST https://api.openai.com/v1/chat/completions \
+          -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "model": "gpt-4",
+            "messages": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "Deployment succeeded for branch master. Notify the team."}]
+          }'
