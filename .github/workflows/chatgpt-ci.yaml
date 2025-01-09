@@ -30,13 +30,13 @@ jobs:
           # Notify on Zoho Cliq
           curl -X POST -H "Content-Type: application/json" -d '{"text":"❌❌❌GitHub Action Deployment failed❌❌❌ for branch ${{ github.ref }} in repository ${{ github.repository }}"}' "https://cliq.zoho.com/company/654406765/api/v2/channelsbyname/testingchannel/message?zapikey=${{ secrets.CLIQ_API_KEY }}"
 
-          # Notify on Gemini AI (Assuming an API endpoint for Gemini AI exists)
+          # Notify on Gemini AI (Replace with actual endpoint and valid API key)
           curl -X POST -H "Content-Type: application/json" -d '{
             "error_message": "GitHub CI build failed for branch ${{ github.ref }} in repository ${{ github.repository }}",
             "error_details": "${{ github.event.head_commit.message }}",
             "action": "deployment",
             "status": "failed"
-          }' "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=GEMINI_API_KEY"
+          }' "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${{ secrets.GEMINI_API_KEY }}"
 
       # Example: Notify on success
       - name: Notify on success (Zoho Cliq)
