@@ -21,7 +21,7 @@ jobs:
           script: |
             pwd
             cd ${{ secrets.REMOTE_TARGET }}
-            git pull origin masterr
+            git pull origin masterrr
 
       # Notify on fail
       - name: Notify on failure (Zoho Cliq & Gemini AI)
