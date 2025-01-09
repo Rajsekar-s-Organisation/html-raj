@@ -33,4 +33,4 @@ jobs:
       - name: Notify on success
         if: success()
         run: |
-            curl -X POST -H "Content-Type: application/json" -d '{"text":"✅✅✅GitHub Action Deployemnt passed for branch ${{ github.ref }} in repository ${{ github.repository }}"}' "https://cliq.zoho.com/company/654406765/api/v2/channelsbyname/aocinternal/message?zapikey=${{ secrets.CLIQ_API_KEY }}"
+            curl -X POST -H "Content-Type: application/json" -d '{"text":"✅✅✅GitHub Action Deployemnt passed for branch ${{ github.ref }} in repository ${{ github.repository }}"}' "https://cliq.zoho.com/company/654406765/api/v2/channelsbyname/testingchannel/message?zapikey=${{ secrets.CLIQ_API_KEY }}"
