@@ -1,4 +1,4 @@
-name: remote ssh command to deploy
+name: remote ssh command to deploy and code review
 on:
   push:
     branches: [ master]
