@@ -1,4 +1,4 @@
-name: gemini ci
+name: Gemini CI
 
 on:
   push:
@@ -11,35 +11,61 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Execute ssh command via using private key
-        uses: appleboy/ssh-action@master
+      - name: Install SSH Agent
+        uses: adriankth/setup-ssh@v2
         with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          key: ${{ secrets.CICD_SSH_KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            pwd
-            cd ${{ secrets.REMOTE_TARGET }}
-            git pull origin masterrr
+          github-ssh: true
 
-      # Notify on fail
-      - name: Notify on failure (Zoho Cliq & Gemini AI)
+      - name: Add SSH Key
+        run: |
+          echo "${{ secrets.CICD_SSH_KEY }}" >> ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Deploy via SSH
+        run: |
+          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} -p ${{ secrets.PORT }} << EOF
+          pwd
+          cd ${{ secrets.REMOTE_TARGET }}
+          git pull origin master
+          EOF
+
+      - name: Notify on Failure (Zoho Cliq)
         if: failure()
         run: |
-          # Notify on Zoho Cliq
-          curl -X POST -H "Content-Type: application/json" -d '{"text":"❌❌❌GitHub Action Deployment failed❌❌❌ for branch ${{ github.ref }} in repository ${{ github.repository }}"}' "https://cliq.zoho.com/company/654406765/api/v2/channelsbyname/testingchannel/message?zapikey=${{ secrets.CLIQ_API_KEY }}"
+          curl -X POST -H "Content-Type: application/json" \
+              -d '{
+                  "message": "❌❌❌ GitHub Action Deployment failed for branch ${{ github.ref }} in repository ${{ github.repository }}",
+                  "parts": [
+                    {
+                      "text": "**Deployment Error Details:**",
+                      "style": "BOLD"
+                    },
+                    {
+                      "text": "```\n"
+                    },
+                    {
+                      "text": "${{ steps.Deploy\ via\ SSH.outputs.error }}" 
+                    },
+                    {
+                      "text": "```"
+                    }
+                  ]
+              }' \
+              "https://cliq.zoho.com/api/v2/channelsbyname/testingchannel/message?zapikey=${{ secrets.CLIQ_API_KEY }}"
 
-          # Notify on Gemini AI (Replace with actual endpoint and valid API key)
-          curl -X POST -H "Content-Type: application/json" -d '{
-            "error_message": "GitHub CI build failed for branch ${{ github.ref }} in repository ${{ github.repository }}",
-            "error_details": "${{ github.event.head_commit.message }}",
-            "action": "deployment",
-            "status": "failed"
-          }' "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${{ secrets.GEMINI_API_KEY }}"
-
-      # Example: Notify on success
-      - name: Notify on success (Zoho Cliq)
+      - name: Notify on Success (Gemini AI)
         if: success()
         run: |
-            curl -X POST -H "Content-Type: application/json" -d '{"text":"✅✅✅GitHub Action Deployment passed for branch ${{ github.ref }} in repository ${{ github.repository }}"}' "https://cliq.zoho.com/company/654406765/api/v2/channelsbyname/testingchannel/message?zapikey=${{ secrets.CLIQ_API_KEY }}"
+          curl -X POST -H "Content-Type: application/json" \
+              -d '{
+                  "contents": [
+                    {
+                      "parts": [
+                        {
+                          "text": "GitHub Action Deployment successful for branch ${{ github.ref }} in repository ${{ github.repository }}."
+                        }
+                      ]
+                    }
+                  ]
+              }' \
+              "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${{ secrets.GEMINI_API_KEY }}"
