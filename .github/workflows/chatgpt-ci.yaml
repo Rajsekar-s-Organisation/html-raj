@@ -28,8 +28,7 @@ jobs:
           cd ${{ secrets.REMOTE_TARGET }}
           git pull origin masterr
           EOF
-
-      - name: Notify on Failure (Zoho Cliq)
+- name: Notify on Failure (Zoho Cliq)
         if: failure()
         run: |
           curl -X POST -H "Content-Type: application/json" \
@@ -44,7 +43,7 @@ jobs:
                       "text": "```\n"
                     },
                     {
-                      "text": "${{ steps.Deploy\ via\ SSH.outputs.error }}" 
+                      "text": "${{ steps['Deploy via SSH'].outputs.error }}" 
                     },
                     {
                       "text": "```"
