@@ -23,12 +23,7 @@ jobs:
             cd ${{ secrets.REMOTE_TARGET }}
             git pull origin master
 
-      - name: Notify about successful code deployment
-        if: success()
-        uses: Integrations-dev/GitHub-Informer@v1
-        with:
-          channel-endpoint: ${{ secrets.ENDPOINT }}
-          message: 'Code deployed successfully to the master branch by ${{ github.actor }}.'
+      
 
   review:
     name: AI Code Review by Gemini
