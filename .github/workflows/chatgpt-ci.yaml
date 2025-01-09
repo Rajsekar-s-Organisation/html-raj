@@ -36,7 +36,7 @@ jobs:
             "error_details": "${{ github.event.head_commit.message }}",
             "action": "deployment",
             "status": "failed"
-          }' "https://api.gemini.ai/v1/error-reports?apikey=${{ secrets.GEMINI_API_KEY }}"
+          }' "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=GEMINI_API_KEY"
 
       # Example: Notify on success
       - name: Notify on success (Zoho Cliq)
