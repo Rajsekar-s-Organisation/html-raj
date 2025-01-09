@@ -2,7 +2,7 @@ name: Gemini CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ masterr ]
 
 jobs:
   build:
